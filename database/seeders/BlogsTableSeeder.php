@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Faker\Generator;
 use DB;
 
 class BlogsTableSeeder extends Seeder
@@ -22,6 +23,8 @@ class BlogsTableSeeder extends Seeder
             DB::table('blogs')->insert([
                'title'=> $faker->name,
                'des'=> $faker->paragraph,
+            //    'created_at'=> new DateTime,
+            //    'updated_at'=> new DateTime,
            ]);
         }
     }
