@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Add5Field extends Migration
+class Edit5FieldUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,9 @@ class Add5Field extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('id_user')->unique();
-            $table->integer('level_user');
-            $table->string('tree');
-            $table->string('parents');
-            $table->string('email_sending')->nullable();
+            $table->integer('level');
+            $table->text('tree');
+            $table->string('parent')->nullable();
         });
     }
 
@@ -30,7 +28,7 @@ class Add5Field extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['level_user','id_user']);
+            //
         });
     }
 }

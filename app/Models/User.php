@@ -21,11 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'id_user',
-        'level_user',
+        'level',
         'tree',
-        'parents',
-        'email_sending',
+        'parent',
     ];
 
     /**

@@ -7,47 +7,75 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Level;
 use Validator;
-use Illuminate\Support\Str;
+
 
 class RegisterController extends Controller
 {
     public function register(Request $request){
-        $levels = Level::all();
+        define('id_root','100000');
         if(isset($_POST["submit"])){
             $validator = Validator::make($request->all(), [ 
                 'name' => 'required', 
-                'email' => 'required|email', 
+                'email' => 'bail|required|email', 
                 'password' => 'required', 
                 'c_password' => 'required|same:password', 
                 
             ]);
-            $id_user = Str::random(16) ;
-            $mess_fail = 'create error';
+            $id_user = rand(100000,999999);
+            // $id_users = User::select('id')->get();
+
+            // var_dump($id_users);
+            // foreach($id_users as $value){
+            //     if($value == $id_user){
+            //         $id_user = rand(100000,999999);
+            //     }else{
+            //         break;
+            //     }
+            // }
             if ($validator->fails()) { 
-                return $mess_fail;            
+                return redirect('register')->withErrors($validator);       
             }
+            $email_user = User::where('email', $request->email)->first();
+            if(isset($email_user)){
+                return redirect('register')->with('error_email', 'Email already exists');
+            }
+            $name_user = User::where('name', $request->name)->first();
+            if(isset($name_user)){
+                return redirect('register')->with('error_user', 'User already exists');
+            }
+
             $input = $request->all(); 
             $input['password'] = bcrypt($input['password']); 
-            $parentRoot = User::find(1);
-            $parent = User::where('id_user',$request->parents)->first();
-            
-            if(isset($request->parents)){
-                if(isset($parent)){
-                    $input['parents']= $request->parents;
-                    $input['tree'] = $parent->tree.",".$id_user;
-                }else{
-                    return "!!!!!parent";
-                }
+            $parent = User::where('id',$request->parent)->first();
+
+            if(isset($request->parent)){
+                $input['parent']= id_root;
+                $input['tree'] = id_root.",".$id_user;   
+                $input['level'] = 2;  
             }else{
-                $input['parents']= $parentRoot->id_user;
-                $input['tree'] = $parentRoot->id_user.",".$id_user;
+                if(isset($parent)){
+                    return redirect('register')->with('error_parent', 'Parent use does not exist');
+                }else{
+                    $input['parent']= $request->parent;
+                    $input['tree'] = $parent->tree.",".$id_user;
+                    switch($parent->level){
+                        case 1:
+                            $input['level'] = 2;
+                            break;
+                        case 2:
+                            $input['level'] = 3;
+                        case 3:
+                            $input['level'] = 3;
+                        default:
+                            $input['level'] = 2;
+                    }
+                    
+                }
             }
-            
-            $input['id_user'] = $id_user ;
             $user = User::create($input); 
             return 'success'; 
         }
-        return view('auth.register', compact("levels"));    
+        return view('auth.register');    
     }
     public function login(){
         return view('auth.login');

@@ -28,19 +28,7 @@
                 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-6 col-xl-5">
                         <div class="card overflow-hidden">
-                            <div class="bg-soft-primary">
-                                <div class="row">
-                                    <!-- <div class="col-7">
-                                        <div class="text-primary p-4">
-                                            <h5 class="text-primary">Free Register</h5>
-                                            <p>Get your free Skote account now.</p>
-                                        </div>
-                                    </div> -->
-                                    <div class="col-5 align-self-end">
-                                        <img src="assets/images/profile-img.png" alt="" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="card-body pt-0"> 
                                 <div>
                                     <a href="">
@@ -57,52 +45,58 @@
                                         <div class="form-group">
                                             <label >Email</label>
                                             <input type="email" class="form-control  is-invalid" value="" id="useremail" name="email" required placeholder="Enter email">
-                                            <!-- @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                            @error('email')
+                                                <span class="invalid-feedback" role="alert" style="color:red;">
+                                                    <strong >{{ $message }}</strong>
                                                 </span>
-                                            @enderror -->
+                                            @enderror
+                                            @if (session('error_email'))
+                                                <span class="invalid-feedback" role="alert" style="color:red;">
+                                                    <strong >{{ session('error_email') }}</strong>
+                                                </span>
+                                            @endif
                                         </div>
     
                                         <div class="form-group">
                                             <label for="username">Username</label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror" value="" required name="name" id="username" placeholder="Enter username">
-                                            <!-- @error('name')
+                                            @error('name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
-                                            @enderror -->
+                                            @enderror
+                                            @if (session('error_user'))
+                                                <span class="invalid-feedback" role="alert" style="color:red;">
+                                                    <strong >{{ session('error_user') }}</strong>
+                                                </span>
+                                            @endif
                                         </div>
     
                                         <div class="form-group">
                                             <label for="userpassword">Password</label>
                                             <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required id="userpassword" placeholder="Enter password">
-                                            <!-- @error('password')
-                                                <span class="invalid-feedback" role="alert">
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert" style="color:red;">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
-                                            @enderror -->
+                                            @enderror
                                         </div>
 
                                         <div class="form-group">
                                             <label >Password Confirm</label>
                                             <input id="password-confirm" type="password" name="c_password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Enter password">
                                         </div>
+                                            @error('c_password')
+                                                <span class="invalid-feedback" role="alert" style="color:red;">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
 
                                         <div class="form-group">
                                             <label >Parent User</label>
-                                            <input  type="text" name="parents" class="form-control is-invalid " placeholder="Enter code">
+                                            <input  type="text" name="parent" class="form-control is-invalid " placeholder="Enter code">
                                         </div>
-                                        <div class="form-group">
-                                            <label >Level </label>
-                                            <select class="form-select" aria-label="Default select example" name='level_user' required>
-                                                <option selected>Open level</option>
-                                                    @foreach($levels as $value){
-                                                    <option value="{{$value->id}}">{{$value->name}}</option> 
-                                                    @endforeach
-                                                
-                                        </select>
-                                        </div>
+                                       
                                         
                                         <div class="mt-4">
                                             <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit" >Register</button>
