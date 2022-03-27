@@ -51,11 +51,17 @@
                                 </a>
                             </div>
                             <div class="p-2">
+                            
                             <form class="form-horizontal" method="POST" action="">
                                 @csrf
+                                @if (session('error_login'))
+                                    <span class="invalid-feedback" role="alert" style="color:red;">
+                                        <strong >{{ session('error_login') }}</strong>
+                                    </span>
+                                @endif
                                     <div class="form-group">
                                         <label for="username">Username</label>
-                                        <input name="email" type="email" class="form-control " placeholder="Enter username" autocomplete="email" autofocus>
+                                        <input name="email" type="email" class="form-control " placeholder="Enter username" autocomplete="email" autofocus required>
                                         <!-- @error('email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -65,7 +71,7 @@
 
                                     <div class="form-group">
                                         <label for="userpassword">Password</label>
-                                        <input type="password" name="password" class="form-control  @error('password') is-invalid @enderror" id="userpassword"  placeholder="Enter password">
+                                        <input type="password" name="password" class="form-control  @error('password') is-invalid @enderror" id="userpassword"  placeholder="Enter password" required>
                                         <!-- @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -102,7 +108,7 @@
 
 
                                     <div class="mt-3">
-                                        <button class="btn btn-primary btn-block waves-effect waves-light" type="submit">Log In</button>
+                                        <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit">Log In</button>
                                     </div>
                                     
                                     <div class="mt-4 text-center">

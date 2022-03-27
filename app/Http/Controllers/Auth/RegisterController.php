@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Level;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 
 class RegisterController extends Controller
 {
-    public function register(Request $request){
+    public function Register(Request $request){
         define('id_root','100000');
         if(isset($_POST["submit"])){
             $validator = Validator::make($request->all(), [ 
@@ -46,14 +47,14 @@ class RegisterController extends Controller
 
             $input = $request->all(); 
             $input['password'] = bcrypt($input['password']); 
-            $parent = User::where('id',$request->parent)->first();
-
-            if(isset($request->parent)){
+            $input['id'] = $id_user;
+            if(empty($request->parent)){
                 $input['parent']= id_root;
                 $input['tree'] = id_root.",".$id_user;   
                 $input['level'] = 2;  
             }else{
-                if(isset($parent)){
+                $parent = User::where('id',$request->parent)->first();
+                if(empty($parent)){
                     return redirect('register')->with('error_parent', 'Parent use does not exist');
                 }else{
                     $input['parent']= $request->parent;
@@ -64,20 +65,41 @@ class RegisterController extends Controller
                             break;
                         case 2:
                             $input['level'] = 3;
+                            break;
                         case 3:
                             $input['level'] = 3;
+                            break;
                         default:
                             $input['level'] = 2;
+                            break;
                     }
                     
                 }
             }
             $user = User::create($input); 
-            return 'success'; 
+            return view('auth.login'); 
         }
         return view('auth.register');    
     }
-    public function login(){
-        return view('auth.login');
+    public function Login(Request $request){
+        if(isset($_POST["submit"])){
+            if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
+                $user = Auth::user(); 
+                // $success['token'] =  $user->createToken('MyApp')-> accessToken; 
+                return view('test.index');
+            } 
+            else{ 
+                return redirect('login')->with('error_login', 'Email or Password do not exists');
+            } 
+        }
+        if (Auth::check()) {
+            return view('test.index');
+        }else{
+            return view('auth.login');
+        }  
+    }
+    public function Logout(){
+        Auth::logout();
+        return redirect('login');
     }
 }

@@ -21,6 +21,7 @@
             <div class="col-md-8">
 
                 <h2 style ="text-align:center; color:blue;">Blog</h2>
+                <a style="float:right;" href="{{route('user.logout')}}">Logout admin</a>
                 <button type="button" class="btn btn-xs btn-primary float-right add" id="create-new-blog">Add Blog</button>
                 
                 <hr>

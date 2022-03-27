@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Test;
+use App\Http\Middleware\checkAdminLogin;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,8 +21,13 @@ Route::get('/', function () {
 // Route::prefix('blog')->group(function () {
 //     Route::get('data', 'App\Http\Controllers\Test\BlogController@data')->name('blog.data');
 // });
-Route::resource('blog','App\Http\Controllers\Test\BlogController')->except('create','edit');
 
 
-Route::match(['get', 'post'],'register', 'App\Http\Controllers\Auth\RegisterController@register')->name('user.register');
-Route::get('login', 'App\Http\Controllers\Auth\RegisterController@login')->name('user.login');
+
+Route::match(['get', 'post'],'register', 'App\Http\Controllers\Auth\RegisterController@Register')->name('user.register');
+Route::match(['get', 'post'],'login', 'App\Http\Controllers\Auth\RegisterController@Login')->name('user.login');
+Route::get('logout', 'App\Http\Controllers\Auth\RegisterController@Logout')->name('user.logout');
+
+Route::middleware([checkAdminLogin::class])->group(function () {
+    Route::resource('blog','App\Http\Controllers\Test\BlogController')->except('create','edit');
+});

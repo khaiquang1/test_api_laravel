@@ -96,7 +96,11 @@
                                             <label >Parent User</label>
                                             <input  type="text" name="parent" class="form-control is-invalid " placeholder="Enter code">
                                         </div>
-                                       
+                                        @if (session('error_parent'))
+                                            <span class="invalid-feedback" role="alert" style="color:red;">
+                                                <strong >{{ session('error_parent') }}</strong>
+                                            </span>
+                                        @endif
                                         
                                         <div class="mt-4">
                                             <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit" >Register</button>
