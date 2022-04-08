@@ -8,11 +8,12 @@
         "php": "^7.3|^8.0",
         "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "^8.75",
         "laravel/passport": "^10.3",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "phpgangsta/googleauthenticator": "dev-master",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {

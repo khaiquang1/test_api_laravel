@@ -19,7 +19,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h2 style ="text-align:center; color:blue;">Register</h2>
+                <h2 style ="text-align:center; color:blue;">Đăng ký</h2>
             </div>
         </div>
     </div>
@@ -30,20 +30,12 @@
                         <div class="card overflow-hidden">
                             
                             <div class="card-body pt-0"> 
-                                <div>
-                                    <a href="">
-                                        <div class="avatar-md profile-user-wid mb-4">
-                                            <span class="avatar-title rounded-circle bg-light">
-                                                <img src="assets/images/logo.svg" alt="" class="rounded-circle" height="34">
-                                            </span>
-                                        </div>
-                                    </a>
-                                </div>
+                                
                                 <div class="p-2">
                                     <form method="POST" class="form-horizontal mt-4" action="">
                                         @csrf
                                         <div class="form-group">
-                                            <label >Email</label>
+                                            <label >Email *</label>
                                             <input type="email" class="form-control  is-invalid" value="" id="useremail" name="email" required placeholder="Enter email">
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
@@ -58,7 +50,7 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="username">Username</label>
+                                            <label for="username">Username *</label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror" value="" required name="name" id="username" placeholder="Enter username">
                                             @error('name')
                                                 <span class="invalid-feedback" role="alert">
@@ -73,7 +65,7 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="userpassword">Password</label>
+                                            <label for="userpassword">Password *</label>
                                             <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required id="userpassword" placeholder="Enter password">
                                             @error('password')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
@@ -83,7 +75,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label >Password Confirm</label>
+                                            <label >Password Confirm *</label>
                                             <input id="password-confirm" type="password" name="c_password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Enter password">
                                         </div>
                                             @error('c_password')
@@ -93,7 +85,7 @@
                                             @enderror
 
                                         <div class="form-group">
-                                            <label >Parent User</label>
+                                            <label >Mã giới thiệu</label>
                                             <input  type="text" name="parent" class="form-control is-invalid " placeholder="Enter code">
                                         </div>
                                         @if (session('error_parent'))
@@ -101,14 +93,29 @@
                                                 <strong >{{ session('error_parent') }}</strong>
                                             </span>
                                         @endif
+                                        <h4>Thông tin tài khoản</h4>
+                                        <div class="form-group">
+                                            <label >Họ và tên </label>
+                                            <input  type="text" name="name_user" class="form-control is-invalid " placeholder="Enter name">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label >Số điện thoại *</label>
+                                            <input  type="phone" name="phone" class="form-control is-invalid " placeholder="Enter phone number" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label >Địa chỉ </label>
+                                            <input  type="text" name="address" class="form-control is-invalid " placeholder="Enter address" >
+                                        </div>
                                         
                                         <div class="mt-4">
-                                            <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit" >Register</button>
+                                            <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit" >Đăng ký</button>
                                         </div>
     
 
                                         <div class="mt-4 text-center">
-                                            <p class="mb-0">By registering you agree to the Me <a href="#" class="text-primary">Terms of Use</a></p>
+                                            <p class="mb-0">Đồng ý điều khoản thanh toán <a href="#" class="text-primary">Terms of Use</a></p>
                                         </div>
     
                                     </form>
@@ -119,7 +126,7 @@
                         </div>
     
                         <div class="mt-5 text-center">
-                            <p>Already have an account ? <a href="{{route('user.login')}}" class="font-weight-medium text-primary"> Login </a> </p>
+                            <p>Bạn đã có tài khoản ? <a href="{{route('user.login')}}" class="font-weight-medium text-primary"> Login </a> </p>
                             <p>Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
                         </div>
     

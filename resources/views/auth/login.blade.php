@@ -22,6 +22,11 @@
                 <h2 style ="text-align:center; color:blue;">Login</h2>
             </div>
         </div>
+        @if (session('status_active'))
+            <span class="invalid-feedback" role="alert" style="color:red;">
+                <strong >{{ session('status_active') }}</strong>
+            </span>
+        @endif
         <div class="account-pages my-5 pt-5">
         <div class="container">
             <div class="row justify-content-center">
@@ -41,7 +46,7 @@
                             </div>
                         </div>
                         <div class="card-body pt-0"> 
-                            <div>
+                            <!-- <div>
                                 <a href="{{url('index')}}">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
@@ -49,7 +54,7 @@
                                         </span>
                                     </div>
                                 </a>
-                            </div>
+                            </div> -->
                             <div class="p-2">
                             
                             <form class="form-horizontal" method="POST" action="">
@@ -60,7 +65,7 @@
                                     </span>
                                 @endif
                                     <div class="form-group">
-                                        <label for="username">Username</label>
+                                        <label for="username">Email</label>
                                         <input name="email" type="email" class="form-control " placeholder="Enter username" autocomplete="email" autofocus required>
                                         <!-- @error('email')
                                             <span class="invalid-feedback" role="alert">
@@ -112,7 +117,7 @@
                                     </div>
                                     
                                     <div class="mt-4 text-center">
-                                        <a href="password/reset" class="text-muted"><i class="mdi mdi-lock mr-1"></i> Forgot your password?</a>
+                                        <a href="" class="text-muted"><i class="mdi mdi-lock mr-1"></i> Forgot your password?</a>
                                     </div>
                                 </form>
                             </div>
@@ -121,7 +126,7 @@
                     </div>
 
                     <div class="mt-5 text-center">
-                        <p>Don't have an account ? <a href="" class="font-weight-medium text-primary"> Signup now </a> </p>
+                        <p>Don't have an account ? <a href="/register" class="font-weight-medium text-primary"> Signup now </a> </p>
                         <p>©  Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
                     </div>
 
