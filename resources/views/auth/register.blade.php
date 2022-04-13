@@ -35,7 +35,7 @@
                                     <form method="POST" class="form-horizontal mt-4" action="">
                                         @csrf
                                         <div class="form-group">
-                                            <label >Email *</label>
+                                            <label >Email <i>(Bắt buộc)</i></label>
                                             <input type="email" class="form-control  is-invalid" value="" id="useremail" name="email" required placeholder="Enter email">
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
@@ -50,7 +50,7 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="username">Username *</label>
+                                            <label for="username">Username <i>(Bắt buộc)</i></label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror" value="" required name="name" id="username" placeholder="Enter username">
                                             @error('name')
                                                 <span class="invalid-feedback" role="alert">
@@ -65,7 +65,7 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="userpassword">Password *</label>
+                                            <label for="userpassword">Password <i>(Bắt buộc)</i></label>
                                             <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required id="userpassword" placeholder="Enter password">
                                             @error('password')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
@@ -75,7 +75,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label >Password Confirm *</label>
+                                            <label >Password Confirm <i>(Bắt buộc)</i></label>
                                             <input id="password-confirm" type="password" name="c_password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Enter password">
                                         </div>
                                             @error('c_password')
@@ -100,7 +100,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label >Số điện thoại *</label>
+                                            <label >Số điện thoại <i>(Bắt buộc)</i></label>
                                             <input  type="phone" name="phone" class="form-control is-invalid " placeholder="Enter phone number" required>
                                         </div>
 

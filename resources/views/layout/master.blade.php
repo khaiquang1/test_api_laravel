@@ -16,8 +16,53 @@
 
 </head>
 <body>
-    @yield('content')
-    
+<style>
+
+    .dropdown {
+    position: relative;
+    display: inline-block;
+    }
+
+    .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    }
+
+    .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    }
+
+    .dropdown-content a:hover {background-color: #ddd;}
+
+    .dropdown:hover .dropdown-content {display: block;}
+
+    .dropdown:hover .dropbtn {background-color: #3e8e41;}
+</style>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="dropdown">
+                <button class="dropbtn btn btn-secondary">{{trans('user.language')}}</button>
+                <div class="dropdown-content">
+                    <a href="{!! route('user.change-language', ['en']) !!}">English</a>
+                    <a href="{!! route('user.change-language', ['vi']) !!}">Vietnam</a>
+                </div>
+            </div>
+            <button class="dropbtn btn btn-secondary" style="float:right;"><a style="text-decoration:none" href="{{route('user.logout')}}" class="badge badge-secondary">{{trans('user.LOGOUT')}}</a></button>
+        </div>
+    </nav>
+    <div class="container">
+        
+       
+        @yield('content')
+    </div>
+        
      <!-- jQuery -->
      <!-- <script src="//code.jquery.com/jquery.js"></script> -->
     <!-- DataTables -->

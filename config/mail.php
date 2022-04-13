@@ -37,12 +37,11 @@ return [
         'smtp' => [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'smtp.gmail.com'),
-            'port' => env('MAIL_PORT', 465),
-            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
-            'auth_mode' => null,
         ],
 
         'ses' => [
@@ -59,7 +58,7 @@ return [
 
         'sendmail' => [
             'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -t -i'),
+            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
         ],
 
         'log' => [
@@ -91,7 +90,11 @@ return [
     |
     */
 
-   
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'kingchiton@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings
@@ -110,21 +113,5 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
-    'driver' => env('MAIL_DRIVER', 'smtp'),
-
-    'stream' =>[
-        'ssl' => [
-            'allow_self_signed' =>true,
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-        ],
-    ],
-
-    'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'kingchiton@gmail.com'),
-        'name' => env('MAIL_FROM_NAME', 'Xác minh'),
-    ],
-
 
 ];

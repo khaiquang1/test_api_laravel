@@ -44,6 +44,11 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'user' =>[
+            'locale' => \App\Http\Middleware\Locale::class,
+            'check.login' => \App\Http\Middleware\checkAdminLogin::class,
+        ],
     ];
 
     /**
@@ -63,5 +68,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'locale' => \App\Http\Middleware\Locale::class,
+        'check.login' => \App\Http\Middleware\checkAdminLogin::class,
     ];
+
 }

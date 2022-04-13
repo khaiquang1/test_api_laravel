@@ -18,9 +18,7 @@ class UserController extends Controller
     public function index(){
         $user= Auth::user();
         $user_veri = UserVerification::where('id_user',$user->id)->first();
-        $id_wallet = $user->wallet_id;
-        $wallet = Wallet::findOrFail($id_wallet);
-        return view('users.index', compact('user_veri','user','wallet'));
+        return view('users.index', compact('user_veri','user'));
     }
 
     public function resetPassword(Request $request){
@@ -96,11 +94,13 @@ class UserController extends Controller
             if($user->block_user){
                 $user->block_user = 0;
                 $user->save();
+                return ['success' => true, 'message' => 'Chặn thành công'];
             }else{
                 $user->block_user = 1;
                 $user->save();
+                return ['success' => true, 'message' => 'Bỏ chặn thành công'];
             }
-            return ['success' => true, 'message' => 'Chặn thành công'];
+            
         }else{
             return ['error' => true, 'message' => 'Bạn không có quyền'];
         }

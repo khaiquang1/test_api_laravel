@@ -1,17 +1,14 @@
 @extends('layout.master')
 
 @section('content')
-  
-    <div class="container">
         <h2 style ="text-align:center; color:blue;">Ví tiền</h2>
         <div class="row">
             <div class="col-4">
                 <div class="card">
-                    <h5 class="card-header">Tiền</h5>
+                    <h5 class="card-header">Ví</h5>
                     <div class="card-body">
-                        <p class="card-text"><b>Tổng tiền trong ví: </b> {{$wallet->amount}}</p>
-                        <p class="card-text"><b>Tổng tiền đầu tư: </b>{{$wallet->invest_money}} </p>
-        
+                        <p class="card-text number_format"><b>Tổng tiền USD: </b > {{$wallet_usd->amount}}</p>
+                        <p class="card-text number_format"><b>Tổng tiền VND: </b > {{$wallet_vnd->amount}}</p>
                         <button type="button" class="btn btn-xs btn-primary float-right add" id="btnDeposit">Nạp</button>
                         <button type="button" class="btn btn-xs btn-primary float-right add" id="btnWithdraw">Rút</button>
                         <button type="button" class="btn btn-xs btn-primary float-right add" id="btnTransfer">Chuyển</button>
@@ -36,6 +33,12 @@
                                 <strong >{{ session('error') }}</strong>
                             </div>
                         @endif
+
+                        @if (session('success'))
+                            <div class="alert alert-primary">
+                                <strong >{{ session('success') }}</strong>
+                            </div>
+                        @endif
                        
                     </div>
                     </div>
@@ -58,43 +61,16 @@
                             </thead>
                             <tbody>
                                 @foreach ($deal as $key=>$item)
-                                   @if($item->action_type == "Deposit")
+                                   
                                    <tr>
                                         <td scope="col">{{$key + 1}}</td>
-                                        <td>Nạp tiền</td>
-                                        <td>{{$item->amount_money}}</td>
-                                        <td>Nạp tiền từ STK <b>{{$item->number_bank}}</b> {{$item->name_user_bank}} Ngân hàng <b>{{$item->name}}</b> </td>
+                                        <td>{{$item->action_type}}</td>
+                                        <td class ="number_format">{{$item->amount_money}}</td>
+                                        <td>{{$item->detail}}</td>
                                         <td>{{$item->note}}</td>
                                         <td>{{$item->created_at}}</td>
                                    </tr>    
-                                   @elseif($item->action_type == "Withdraw")
-                                        <tr>
-                                            <td scope="col">{{$key + 1}}</td>
-                                            <td>Rút tiền</td>
-                                            <td>{{$item->amount_money}}</td>
-                                            <td>Rút tiền về STK <b>{{$item->number_bank}}</b> {{$item->name_user_bank}} Ngân hàng <b>{{$item->name}}</b> <b>(Phí: {{$item->fee}})</b></td>
-                                            <td>{{$item->note}}</td>
-                                            <td>{{$item->created_at}}</td>
-                                        </tr>
-                                    @elseif($item->action_type == "Transfer" && $item->id_user_to != $user->id)
-                                        <tr>
-                                            <td scope="col">{{$key + 1}}</td>
-                                            <td>Chuyển tiền</td>
-                                            <td>{{$item->amount_money}}</td>
-                                            <td>Chuyển tiền qua tài khoản <b>{{$item->id_user_to}}</b></td>
-                                            <td>{{$item->note}}</td>
-                                            <td>{{$item->created_at}}</td>
-                                        </tr> 
-                                    @elseif($item->action_type == "Transfer" && $item->id_user_to == $user->id)
-                                    <tr>
-                                            <td scope="col">{{$key + 1}}</td>
-                                            <td>Nhận tiền</td>
-                                            <td>{{- $item->amount_money}}</td>
-                                            <td>Nhận tiền từ tài khoản <b>{{$item->id_user}}</b></td>
-                                            <td>{{$item->note}}</td>
-                                            <td>{{$item->created_at}}</td>
-                                        </tr> 
-                                   @endif
+        
                                 @endforeach
                             </tbody>
                     </div>
@@ -102,7 +78,7 @@
                 </div>
             </div>
         </div>
-    </div>
+   
    
      <!-- Modal nạp tiền -->
      <div class="modal fade" id="depositModal" role="dialog">
@@ -118,12 +94,21 @@
                 @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label >Địa chỉ ví của bạn</label>
-                            <input type="text" name="wallet_address" class="form-control input-sm" value="{{$wallet->wallet_address}}" readonly>
+                            <label >Ví hệ thống</label>
+                            <input type="number"  class="form-control input-sm" placeholder="abcdefghik" readonly required>
                         </div>
                         <div class="form-group">
-                            <label >Nhập số tiền (Tối thiểu 100 000đ)</label>
+                            <label >Nhập số tiền</label>
                             <input type="number" name="amount_money"  class="form-control input-sm" placeholder="Số tiền" min=0 required>
+                        </div>
+                        <div class="form-group">
+                            <label >Chọn loại tiền nạp</label>
+                            <select name="currency_id" class="form-select" aria-label="Default select example" required>
+                                <option selected value="">---Không chọn---</option>
+                                @foreach ($currency as $curr)
+                                    <option value="{{$curr->id}}">{{$curr->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label >Chọn ngân hàng</label>
@@ -174,7 +159,8 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label >Nhập số tiền (Tối thiểu 100000, tối đa {{$wallet->amount - 0.1*$wallet->amount}})</label>
+                        <label >Nhập số tiền (Tối thiểu 100 000vnd || 5usd) </label>
+                        <div><i>Ví trong tài khoản của bạn rút được tối đa <b class ="number_format">{{$wallet_vnd->amount - 0.1*$wallet_vnd->amount}}</b>vnd || <b class ="number_format">{{$wallet_usd->amount - 0.1*$wallet_usd->amount}}</b>usd)</i></div>
                         <input type="number" name="amount_money" id="withdraw_amount_coin" class="form-control input-sm" min=0 placeholder="Số tiền" required>
                     </div>
                     <div class="form-group">
@@ -234,8 +220,12 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label >Nhập số tiền (Tối thiểu 100 000đ, tối đa {{$wallet->amount}})</label>
+                        <label >Nhập số tiền (Tối thiểu 100 000vnd || 5usd, tối đa <b class="number_format">{{$wallet_vnd->amount}}</b>vnd || <b class="number_format">{{$wallet_usd->amount}}</b>usd)</label>
                         <input type="number" name="amount_money" class="form-control input-sm" placeholder="Số tiền" min=0 required>
+                    </div>
+                    <div class="form-group">
+                        <label >Địa chỉ ví bạn muốn sử dụng</label>
+                        <input type="text" name="wallet_address" class="form-control input-sm" required>
                     </div>
                     <div class="form-group">
                         <label >Chuyển cho ID user</label>
@@ -281,6 +271,17 @@
             _amount = parseFloat($(this).val());
             _amount_fee = (_amount*0.1).toFixed(2);
             $('#withdraw_amount_fee').val(_amount_fee);
+        });
+
+        $('.number_format').text(function () { 
+            var str = $(this).html() + ''; 
+            x = str.split('.'); 
+            x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
+            var rgx = /(\d+)(\d{3})/; 
+            while (rgx.test(x1)) { 
+                x1 = x1.replace(rgx, '$1' + ' ' + '$2'); 
+            } 
+            $(this).html(x1 + x2); 
         });
 
     </script>

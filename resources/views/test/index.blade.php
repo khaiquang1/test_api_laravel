@@ -25,7 +25,13 @@
                 <button type="button" class="btn btn-xs btn-primary float-right add" id="create-new-blog">Add Blog</button>
                 
                 <hr>
-
+                @foreach ($array as $value)
+                    <div>{{$value->title}}</div>
+                    <div>{{$value->bank_id}}
+                       
+                    </div>
+                    </br> 
+                @endforeach
                 <table id="blogs-table" class="table table-bordered table-condensed table-striped">
                     <thead>
                         <tr>

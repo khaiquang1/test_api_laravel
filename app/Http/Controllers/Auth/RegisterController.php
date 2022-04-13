@@ -10,6 +10,7 @@ use App\Models\UserVerification;
 use App\Models\UserActivation;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Classes\HandleClasses;
 use Validator;
 use Carbon\Carbon;
@@ -20,7 +21,8 @@ use Mail;
 class RegisterController extends Controller
 {
     public function Register(Request $request){
-        define('id_root','100000');
+        $root = User::where('name', 'root')->first();
+        define('id_root',$root->id);
         if(isset($_POST["submit"])){
             $validator = Validator::make($request->all(), [ 
                 'name' => 'required',
@@ -31,12 +33,20 @@ class RegisterController extends Controller
                 
             ]);
             $id_user = rand(100000,999999);
-            // $check_id = User::where('id',$id_user)->first();
 
-            // var_dump($id_users);
-            // while(empty($check_id)){
-            //     $id_user = rand(100000,999999);
+            // $check = 0;
+            // while($check == 0){
+            //     
             // }
+
+            // $id_users = User::select('id')->get();
+            // foreach ($id_users as $item){
+            //     if($item->id == $id_user){
+            //         $id_user = rand(100000,999999);
+            //         return $id_user;
+            //     }
+            // }
+            
             if ($validator->fails()) { 
                 return redirect('register')->withErrors($validator);       
             }
@@ -88,14 +98,8 @@ class RegisterController extends Controller
                 "phone" =>$request->phone,
                 "address" =>$request->address,
             ]);
-            $wallet_add = HandleClasses::randomString(16);
-            $wallet = Wallet::create([
-                "wallet_address" => $wallet_add
-            ]);
-    
-            $input['wallet_id'] = $wallet->id;
             $user = User::create($input); 
-            return redirect('login'); 
+            return redirect('login')->with('status_active', 'Bạn đã đăng kí thành công'); 
         }
         if(Auth::check()){
             return redirect('user');
@@ -108,6 +112,7 @@ class RegisterController extends Controller
             if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
                 $user = Auth::user(); 
                 if($user->active){
+                   
                     return redirect('user');
                 }else{
                     return redirect('email/verify');
@@ -130,49 +135,77 @@ class RegisterController extends Controller
     }
     public function Logout(){
         Auth::logout();
+        Session::flush();
         return redirect('login');
     }
 
     //function send email otp 
     public function verifyEmail(Request $request){
-        if(Auth::check() && Auth::user()->block_user){
-            $user = Auth::user();
+        
+        $user = Auth::user();
+        if(isset($_POST["submit"])){
+            $active_user = UserActivation::where('id_user',$user->id)->first();
+            
+            if($active_user->active_code == $request->active_code){
+                $user->active = true;
+                $user->save();
+                return redirect('user');
+            }else{
+                $error ="Mã không đúng";
+                return view('auth.verify-otp', compact('error'));
+            }
+        }
 
+        if(Auth::check() && Auth::user()->block_user ){
+            $active_check = UserActivation::where('id_user', $user->id)->first(); 
+            if($active_check->active_code == NULL){
+                $user_active = UserActivation::where('id_user', $user->id)->first();
+                if(empty($user_active)){
+                    Auth::logout();
+                    return redirect('login');
+                }
+                $user_active->active_code = rand(1000,9999);
+                $user_active->active_code_expired_in = Carbon::now()->addSecond(60);
+                $user_active->save();
+                //send mail
+                $to_name= $user->name;
+                $to_email = $user->email; 
+                $data = array("name"=>$user->name,"body"=>$user_active->active_code);
+                Mail::send('email.user-activation',$data, function($message) use ($to_name,$to_email){
+                    $message->to($to_email)->subject('Xác thực email');
+                    $message->from($to_email,$to_name);
+                });
+            }
+            return view('auth.verify-otp', compact('user'));
+        }else{
+            return redirect('login');
+        }
+       
+    }
+
+    public function reVerify(){
+        $user = Auth::user();
+        if(Auth::check() && Auth::user()->block_user ){
             $user_active = UserActivation::where('id_user', $user->id)->first();
+            if(empty($user_active)){
+                Auth::logout();
+                return redirect('login');
+            }
             $user_active->active_code = rand(1000,9999);
             $user_active->active_code_expired_in = Carbon::now()->addSecond(60);
             $user_active->save();
             //send mail
             $to_name= $user->name;
             $to_email = $user->email; 
-            $data = array("name"=>$user,"body"=>$user_active->active_code);
+            $data = array("name"=>$user->name,"body"=>$user_active->active_code);
             Mail::send('email.user-activation',$data, function($message) use ($to_name,$to_email){
                 $message->to($to_email)->subject('Xác thực email');
                 $message->from($to_email,$to_name);
             });
-            return view('auth.verify-otp', compact('user'));
+            return redirect('email/verify')->with('success','Code đã được gửi lại');
         }else{
             return redirect('login');
         }
-        if(isset($_POST["submit"])){
-            $check_code = UserActivation::find($user->id)->where('active_code',$request->active_code)->first();
-            if(empty($check_code)){
-                return back()->with('active_code','Code không tồn tại');
-            }else{
-                $user->active = true;
-                $user->save();
-                return redirect('user');
-            }
-        }
-    }
-
-    public function reVerify(){
-        $user = Auth::user();
-        UserActivation::find($user->id)->update([
-            "active_code" =>rand(1000,9999),
-            "active_code_expired_in" =>Carbon::now()->addSecond(60),
-        ]);
-        //send mail
 
     }
 

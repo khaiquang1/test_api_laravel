@@ -12,7 +12,9 @@ class Money extends Model
     protected $fillable = [
         'id_user',
         'amount_money',
-        'currency',
+        'currency_id',
+        'rate',
+        'detail',
         'action_type',
         'fee',
         'wallet_address',

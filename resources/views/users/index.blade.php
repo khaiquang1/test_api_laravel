@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>User</title>
+@extends('layout.master')
 
-    <!-- Bootstrap CSS -->
- 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
-<div class="container">
+@section('content')
     <div class="row">
         <div class="col-md-8">
-            <h2 style ="text-align:center; color:blue;">User</h2>
-            <a style="float:right;" href="{{route('user.logout')}}">Logout user</a>
+            <h2 style ="text-align:center; color:blue;">{{trans('user.User')}}</h2>
+            
+            
             @if (session('success'))
                 <span class="invalid-feedback" role="alert" style="color:red;">
                     <strong >{{ session('success') }}</strong>
@@ -27,12 +15,12 @@
                 <b>ID: </b><span>{{$user->id}}</span></br>
                 <b>E-mail: </b><span>{{$user->email}}</span></br>
             </div>
-            <button type="button" class="btn btn-xs btn-primary float-right add" id="btnChangePassword">Đổi mật khẩu</button>
-            <button type="button" class="btn btn-xs btn-primary float-right add" id="btnInfoUser">Thông tin</button>
+            <button type="button" class="btn btn-xs btn-primary float-right add" id="btnChangePassword">{{trans('user.change-password')}}</button>
+            <button type="button" class="btn btn-xs btn-primary float-right add" id="btnInfoUser">{{trans('user.information')}}</button>
             @if($user->authenticator == null)
-                <a href="{{route('user.authenticator')}}" class="btn btn-warning" >Kích hoạt auth</a>
+                <a href="{{route('user.authenticator')}}" class="btn btn-warning" >{{trans('user.active-auth')}}</a>
             @else
-                <a href="{{route('authenticator.disable')}}" class="btn btn-warning" >Hủy kích hoạt auth</a>
+                <a href="{{route('authenticator.disable')}}" class="btn btn-warning" >{{trans('user.disable-auth')}}</a>
             @endif
             </br>
         
@@ -50,7 +38,7 @@
 
             
 
-            <h1>Xác minh</h1>
+            <h1>{{trans('user.verification')}}</h1>
             @if (session('status_verification'))
                 <span class="invalid-feedback" role="alert" >
                     <strong >{{ session('status_verification') }}</strong>
@@ -60,23 +48,23 @@
             @csrf
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                    <label for="formFile" class="form-label">Số CMND/CCCD</label>
+                    <label for="formFile" class="form-label">{{trans('user.CMND')}}</label>
                     </div>
                     <input type="text" class="form-control" placeholder="CMND/CCCD" name='number_cmnd' aria-describedby="basic-addon1">
                 </div>
 
                 <div class="mb-3">
-                    <label for="formFile" class="form-label">Ảnh của bạn</label>
+                    <label for="formFile" class="form-label">{{trans('user.your-selfie')}}</label>
                     <input class="form-control" name="image_selfie" type="file" id="formFile">
                 </div>
 
                 <div class="mb-3">
-                    <label for="formFile" class="form-label">Ảnh CMND/CCCD</label>
+                    <label for="formFile" class="form-label">{{trans('user.CMND')}}</label>
                     <input class="form-control" name="image_cmnd" type="file" id="formFile">
                 </div>
                 </br>
                 <div class="mt-3" >
-                    <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit">Xác minh</button>
+                    <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit">{{trans('user.verification')}}</button>
                 </div>
             </form>
 
@@ -88,28 +76,28 @@
                 <div class="modal-content">
                     <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Thông tin</h4>
+                    <h4 class="modal-title">{{trans('user.information')}}</h4>
                     </div>
                     <form class="form" action="/user-verification/info" method="POST" id="formModal">
                     @csrf
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="name">Họ và tên</label>
+                                <label for="name">{{trans('user.full-name')}}</label>
                                 <input type="text" name="name_user" class="form-control input-sm" @if(!empty($user_veri)) value='{{$user_veri->name_user}}' @endif>
                             </div>
                             <div class="form-group">
-                                <label for="phone">SĐT</label>
+                                <label for="phone">{{trans('user.phone')}}</label>
                                 <input type="number"  name="phone" class="form-control input-sm" @if(!empty($user_veri)) value='{{$user_veri->phone}}' @endif>
                             </div>
                             <div class="form-group">
-                                <label for="name">Địa chỉ</label>
+                                <label for="name">{{trans('user.address')}}</label>
                                 <input type="text" name="address" class="form-control input-sm" @if(!empty($user_veri)) value='{{$user_veri->address}}' @endif>
                             </div>
 
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary btn-update" type="submit" name="submit">Save</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary btn-update" type="submit" name="submit">{{trans('user.save')}}</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{trans('user.close')}}</button>
                         </div>
                     </form>
                 </div>
@@ -125,7 +113,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Thay đổi mật khẩu</h4>
+                    <h4 class="modal-title">{{trans('user.change-password')}}</h4>
                     </div>
                     <form class="form" action="/reset-password" method="POST" id="formModal">
                     @csrf
@@ -145,8 +133,8 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary btn-update" type="submit" name="submit">Save</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary btn-update" type="submit" name="submit">{{trans('user.save')}}</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{trans('user.close')}}</button>
                         </div>
                     </form>
                 </div>
@@ -157,7 +145,7 @@
 
         </div>
     </div>
-</div>
+
 
 <script>   
 
@@ -171,7 +159,6 @@
         });
     });
 </script>
-</body>
-</html>
 
+@endsection
 

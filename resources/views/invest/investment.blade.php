@@ -113,13 +113,17 @@
         $(document).ready(function(){
             _percent_gold_package1 = parseFloat(0.05);
             _percent_gold_package2 = parseFloat(0.1);
-            $('#amount').blur(function(){
+            _percent_gold_package3 = parseFloat(0.5);
+            $('#amount').on('input',function(e){
                 _amount = parseFloat($(this).val());
                 if(_amount >= 2000000 && _amount < 50000000){
                     _percent_day = (_percent_gold_package1 * _amount)/100;
                     _percent_2year = _percent_day * 720;
-                }else if(amount>= 50000000){
+                }else if(_amount>= 50000000 && _amount < 100000000){
                     _percent_day = (_percent_gold_package2 * _amount)/100;
+                    _percent_2year = _percent_day * 720;
+                }else if(_amount >= 100000000 ){
+                    _percent_day = (_percent_gold_package3 * _amount)/100;
                     _percent_2year = _percent_day * 720;
                 }else if(_amount < 2000000){
                     _percent_day = 0;

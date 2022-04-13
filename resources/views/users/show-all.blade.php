@@ -57,7 +57,7 @@
                     dataType: 'json',
                     success: function(data){
                         if(data.success == true){
-                            console.log(data.message);
+                            alert(data.message);
                         }else{
                             alert(data.message);
                         }
@@ -73,6 +73,7 @@
                 dataType: 'json',
                 success: function(data){
                     if(data.success == true){
+                        alert(data.message);
                         setTimeout(location.reload(),1000);
                     }else{
                         alert(data.message);

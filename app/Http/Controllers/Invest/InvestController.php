@@ -31,7 +31,7 @@ class InvestController extends Controller
             $wallet->save();
             return redirect('user/investment')->with('success','Bạn đã đăng kí gói ')->with('package', $package_check->name);
         }
-        $invest = Investment::join('package_invests','investments.package_id','=','package_invests.id')->get();
+        $invest = Investment::join('package_invests','investments.package_id','=','package_invests.id')->where('investments.id_user',Auth::user()->id)->get();
         return view('invest.investment', compact('invest'));
     }
 }

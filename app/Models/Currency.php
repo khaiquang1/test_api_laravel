@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MoneyTransfer extends Model
+class Currency extends Model
 {
     use HasFactory;
-
-    protected $table = 'money_transfers';
+    protected $table = 'currency';
     protected $fillable = [
-        'id_user',
-        'id_user_to',
-        'amount_money',
-        'note',
-        'status',
+        'name',
+        'input_money_type',
+        'output_money_type',
+        'rate',
     ];
 }

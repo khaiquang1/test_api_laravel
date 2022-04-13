@@ -12,7 +12,9 @@ class Wallet extends Model
     protected $fillable = [
         'wallet_address',
         'amount',
-        'currency',
+        'id_user',
+        'type_money',
+        'invest_money',
         'status',	
         'invest_money',
     ];

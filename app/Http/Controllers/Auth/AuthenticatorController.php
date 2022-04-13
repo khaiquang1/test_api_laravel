@@ -42,7 +42,7 @@ class AuthenticatorController extends Controller
         $user = Auth::user();
         $user->authenticator = $secretCode;
         $user->save();
-        return redirect('user')->with('success', 'Đã kích hoạt google authenticator');
+        return redirect('user/wallet')->with('success', 'Đã kích hoạt google authenticator');
     }
 
     public function disableAuthen(Request $request){
@@ -56,7 +56,7 @@ class AuthenticatorController extends Controller
             $user = Auth::user();
             $user->authenticator = null;
             $user->save();
-            return redirect('user')->with('success', 'Đã hủy kích hoạt google authenticator');
+            return redirect('user/wallet')->with('success', 'Đã hủy kích hoạt google authenticator');
         }
         return view('auth.authen-disable');
     }

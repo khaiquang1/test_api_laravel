@@ -29,7 +29,6 @@ class User extends Authenticatable
         'active',
         'block_user',
         'authenticator',
-        'wallet_id',
     ];
 
     /**

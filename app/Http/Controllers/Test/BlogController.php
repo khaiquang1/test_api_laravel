@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\ExamService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Blog;
+use App\Models\Bank;
 use Yajra\Datatables\Datatables;
 
 
@@ -20,7 +21,20 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {  
-        return view('test.index');
+        $blogs = Blog::where('bank_id','<>',null)->get();
+        $arr = [];
+        $array = [];
+        foreach ($blogs as $key=>$item){
+            $banks = json_decode($item->bank_id);
+            foreach ($banks as $k=>$value){
+                $arr[$k] = Bank::findOrFail($value)->name;
+            }
+            $item->bank_id = implode(",",$arr);
+            $array[$key] = $item;
+        }
+       
+       
+        return view('test.index',compact('array'));
     }
 
     /**
