@@ -255,8 +255,8 @@
     <script>
 
         $(document).ready(function(){
-            $("#btnDeposit").click(function(){
-                $("#depositModal").modal();
+            $("#btnDeposit").on('click',function(){
+                $("#depositModal").modal('show');
             });
 
             $("#btnWithdraw").click(function(){

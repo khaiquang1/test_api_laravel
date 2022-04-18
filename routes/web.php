@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Test;
-use App\Http\Middleware\checkAdminLogin;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,6 +38,8 @@ Route::middleware(['user'])->group(function () {
     Route::post('reset-password','App\Http\Controllers\Auth\UserController@resetPassword')->name('user.reset_password');
     Route::post('user-verification','App\Http\Controllers\Auth\UserController@verificationUser');
     Route::post('user-verification/info','App\Http\Controllers\Auth\UserController@informationUser');
+    //complete search user
+    Route::post('user/complete','App\Http\Controllers\Auth\UserController@completeUser')->name('autocomplete.users');
     //chặn user
     Route::get('user/block/{id}','App\Http\Controllers\Auth\UserController@blockUser');
     //thay đổi level user
@@ -62,4 +62,7 @@ Route::middleware(['user'])->group(function () {
     Route::match(['get', 'post'],'user/investment','App\Http\Controllers\Invest\InvestController@investment')->name('money.invest');
     //blog
     Route::resource('blog','App\Http\Controllers\Test\BlogController')->except('create','edit');
+
+    //test multi Options
+    Route::get('user/multi-options','App\Http\Controllers\Test\TestController@index')->name('user.multi_options');
 });

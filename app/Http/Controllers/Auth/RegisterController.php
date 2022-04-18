@@ -12,7 +12,6 @@ use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Classes\HandleClasses;
-use Validator;
 use Carbon\Carbon;
 use Mail;
 
@@ -24,14 +23,15 @@ class RegisterController extends Controller
         $root = User::where('name', 'root')->first();
         define('id_root',$root->id);
         if(isset($_POST["submit"])){
-            $validator = Validator::make($request->all(), [ 
+            $validator = request()->validate([ 
                 'name' => 'required',
-                'phone' => 'required',  
+                'phone' => 'required|min:8',  
                 'email' => 'bail|required|email', 
-                'password' => 'required', 
+                'password' => 'required||min:6', 
                 'c_password' => 'required|same:password', 
                 
             ]);
+
             $id_user = rand(100000,999999);
 
             // $check = 0;
@@ -47,9 +47,7 @@ class RegisterController extends Controller
             //     }
             // }
             
-            if ($validator->fails()) { 
-                return redirect('register')->withErrors($validator);       
-            }
+           
             $email_user = User::where('email', $request->email)->first();
             if(isset($email_user)){
                 return redirect('register')->with('error_email', 'Email đã tồn tại');
@@ -89,6 +87,20 @@ class RegisterController extends Controller
                     } 
                 }
             }
+            $check_wallet = Wallet::where('id_user',$id_user)->first();
+            if(empty($check_wallet)){
+                Wallet::create([
+                    'id_user' => $user->id,
+                    'wallet_address' => HandleClasses::randomString(16),
+                    'type_money' => "VND",
+                ]);
+    
+                Wallet::create([
+                    'id_user' => $user->id,
+                    'wallet_address' => HandleClasses::randomString(16),
+                    'type_money' => "USD",
+                ]);
+            }
             UserActivation::create([
                 "id_user"=>$id_user,
             ]);
@@ -112,7 +124,6 @@ class RegisterController extends Controller
             if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
                 $user = Auth::user(); 
                 if($user->active){
-                   
                     return redirect('user');
                 }else{
                     return redirect('email/verify');

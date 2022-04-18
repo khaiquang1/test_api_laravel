@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Level;
 use App\Models\Wallet;
+use Illuminate\Support\Facades\File;
 use App\Models\UserVerification;
 use App\Classes\HandleClasses;
-use Validator;
 
 class UserController extends Controller
 {
@@ -22,22 +22,19 @@ class UserController extends Controller
     }
 
     public function resetPassword(Request $request){
-        $validator = Validator::make($request->all(), [ 
+        $validator = $request->validate ([ 
             'password_old' => 'required|min:6',
             'password' => 'required|min:6', 
             'c_password' => 'required|same:password', 
         ]);
-        if ($validator->fails()) { 
-            return redirect('user')->withErrors($validator);       
-        }
-        
+       
         $user = Auth::user();
         if (Hash::check($request->password_old, $user->password)){
             $user->password = bcrypt($request->password);
             $user->save();
-            return redirect('user')->with('password_status', 'Password đã được thay đổi ');
+            return redirect('user')->with('success', 'Password đã được thay đổi ');
         }else{
-            return redirect('user')->with('password_status', 'Password cũ không tồn tại');
+            return redirect('user')->with('message', 'Password cũ không tồn tại');
         }
 
     }
@@ -51,41 +48,84 @@ class UserController extends Controller
                 'address' => $request->address,
             ]
         );
-        return redirect('user')->with('info_status', 'Lưu thông tin thành công'); 
+        return redirect('user')->with('message', 'Lưu thông tin thành công'); 
     }
 
     public function verificationUser(Request $request){
-        $validator = Validator::make($request->all(), [ 
-            'number_cmnd' => 'required||min:8',
-            'image_selfie' => 'image|max:1024', 
-            'image_cmnd' => 'image|max:1024', 
+        $uploadPath = "upload/users/";
+        $validator = $request->validate([ 
+            'number_cmnd' => 'required|min:6', 
         ]);
-        if ($validator->fails()) { 
-            return redirect('user')->withErrors($validator);       
-        }
-        if(empty($request->image_selfie) || empty($request->image_cmnd)){
-            return redirect('user')->with('status_verification', 'Hình ảnh trống'); 
+        $check_data = UserVerification::where('id_user', Auth::user()->id)->first();
+
+        //Xử lý hình ảnh cmnd
+        if($request->hasFile('image_cmnd')){
+            $validator = $request->validate([ 
+                'image_cmnd' => 'image|max:10240', 
+            ]);
+            if($check_data->image_cmnd == null){
+                $image_cmnd = HandleClasses::handleImage($request->image_cmnd,$uploadPath);
+            }else{
+                $image_cmnd = HandleClasses::handleImage($request->image_cmnd,$uploadPath);
+                $image_path_cmnd = $uploadPath.$check_data->image_cmnd;  
+                if(File::exists($image_path_cmnd)) {
+                    File::delete($image_path_cmnd);
+                }
+            }
         }else{
-            $image_selfie = HandleClasses::handleImage($request->image_selfie);
-            $image_cmnd = HandleClasses::handleImage($request->image_cmnd);
+            if($check_data->image_cmnd == null){
+                return redirect('user')->with('error','Hình ảnh không được trống');
+            }else{
+                $image_cmnd = $check_data->image_cmnd;
+            }
         }
-        $user = Auth::user();
-        UserVerification::where('id_user',$user->id)->update(
-            [
-                'number_cmnd' =>$request->number_cmnd,
-                'image_selfie' =>$image_selfie,
-                'image_cmnd' => $image_cmnd,
-            ]
-        );
-        return redirect('user')->with('status_verification', 'Xác thực thành công');
+
+        //Xử lý hình ảnh selfie
+        if($request->hasFile('image_selfie')){
+            $validator = $request->validate([ 
+                'image_selfie' => 'image|max:10240', 
+            ]);
+            if($check_data->image_selfie == null){
+                $image_selfie = HandleClasses::handleImage($request->image_selfie,$uploadPath);
+            }else{
+                $image_selfie = HandleClasses::handleImage($request->image_selfie,$uploadPath);
+                $image_path_selfie = $uploadPath.$check_data->image_selfie;  
+                if(File::exists($image_path_selfie)) {
+                    File::delete($image_path_selfie);
+                }
+            }
+        }else{
+            if($check_data->image_selfie == null){
+                return redirect('user')->with('error','Hình ảnh không được trống');
+            }else{
+                $image_selfie = $check_data->image_selfie;
+            }
+        }
+        
+        $check_data->number_cmnd = $request->number_cmnd;
+        $check_data->image_selfie = $image_selfie;
+        $check_data->image_cmnd = $image_cmnd;
+        $check_data->save();
+        
+        return redirect('user')->with('message', 'Thành công');
     }
 
-    public function showAll(){
+    public function showAll(Request $request){
+        $search = $request->search_user;
         $user = Auth::user();
-        $users = User::all();
+        $users = User::where('id','<>',null)->orderBy('name','DESC');
+        if($search){
+            $users = $users->where('id','LIKE', "%{$search}%")
+            ->orWhere('name','LIKE', "%{$search}%")
+            ->orWhere('email', 'LIKE', "%{$search}%");
+        }
+        $search_level = $request->search_level;
+        if($search_level){
+            $users = $users->where('level',$search_level);
+        }
+        $users = $users->paginate(15);
         $levels = Level::all();
-        return view('users.show-all', compact('users', 'levels', 'user'));
-        
+        return view('users.show-all', compact('users', 'levels', 'user'));   
     }
 
     public function blockUser($id){
@@ -119,6 +159,21 @@ class UserController extends Controller
        
     }
 
+    public function completeUser(Request $request){
+        if($request->get('query')){
+            $search = $request->get('query');
+            $data = User::where('id','LIKE', "%{$search}%")
+                        ->orWhere('name','LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%")
+                        ->get();
+            $output = '<ul class="dropdown-menu list-group" style="display:block; position: relative;">';
+            foreach ($data as $row){
+                $output .= '<li class="list-group-item">'.$row->email.'</li>';
+            }
+            $output .= '</ul>';
+            echo $output;
+        }
+    }
     //API
     // public $successStatus = 200;
     // public function login(){

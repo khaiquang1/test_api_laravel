@@ -15,7 +15,11 @@ return [
     'active-auth' => 'Active Authentication',
     'disable-auth' => 'Disable Authentication',
     'verification' => 'Verification',
-    'CMND' => 'CCCD/CMND',
+    'CMND' => 'Identification ',
     'your-selfie' => 'Your selfie',
+    'old-password' => 'Old password',
+    'new-password' => 'New password',
+    'confirm-new-password' => 'Confirm new password',
+    'update-picture' => 'Update picture',
 
 ];

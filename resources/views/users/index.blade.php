@@ -5,66 +5,73 @@
         <div class="col-md-8">
             <h2 style ="text-align:center; color:blue;">{{trans('user.User')}}</h2>
             
-            
-            @if (session('success'))
-                <span class="invalid-feedback" role="alert" style="color:red;">
-                    <strong >{{ session('success') }}</strong>
-                </span>
-            @endif
             <div>
                 <b>ID: </b><span>{{$user->id}}</span></br>
                 <b>E-mail: </b><span>{{$user->email}}</span></br>
             </div>
-            <button type="button" class="btn btn-xs btn-primary float-right add" id="btnChangePassword">{{trans('user.change-password')}}</button>
-            <button type="button" class="btn btn-xs btn-primary float-right add" id="btnInfoUser">{{trans('user.information')}}</button>
+            <button type="button" class="btn btn-xs btn-primary add" id="btnChangePassword">{{trans('user.change-password')}}</button>
+            <button type="button" class="btn btn-xs btn-primary add" id="btnInfoUser">{{trans('user.information')}}</button>
             @if($user->authenticator == null)
                 <a href="{{route('user.authenticator')}}" class="btn btn-warning" >{{trans('user.active-auth')}}</a>
             @else
                 <a href="{{route('authenticator.disable')}}" class="btn btn-warning" >{{trans('user.disable-auth')}}</a>
             @endif
             </br>
-        
-            @if (session('password_status'))
-                <span class="invalid-feedback" role="alert" style="color:red;">
-                    <strong >{{ session('password_status') }}</strong>
-                </span>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
-
-            @if (session('info_status'))
-                <span class="invalid-feedback" role="alert" >
-                    <strong >{{ session('info_status') }}</strong>
-                </span>
-            @endif
-
-            
 
             <h1>{{trans('user.verification')}}</h1>
-            @if (session('status_verification'))
-                <span class="invalid-feedback" role="alert" >
-                    <strong >{{ session('status_verification') }}</strong>
-                </span>
-            @endif
+            </br>
             <form class="form-horizontal" method="POST" action="/user-verification" enctype="multipart/form-data">
             @csrf
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                     <label for="formFile" class="form-label">{{trans('user.CMND')}}</label>
                     </div>
-                    <input type="text" class="form-control" placeholder="CMND/CCCD" name='number_cmnd' aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" name='number_cmnd' @if($user_veri->number_cmnd != null) value='{{$user_veri->number_cmnd}}' @else placeholder="{{trans('user.CMND')}}"  @endif >
                 </div>
-
+                <style>
+                    .img-thumbnail {
+                        height:200px;
+                    };
+                </style>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">{{trans('user.your-selfie')}}</label>
-                    <input class="form-control" name="image_selfie" type="file" id="formFile">
+                    @if($user_veri->image_selfie != null)
+                        <img src="{{asset('upload/users/'.$user_veri->image_selfie)}}" alt="{{$user_veri->name_user}}" class="img-thumbnail">
+                        <div class="col">
+                            {{trans('user.update-picture')}}
+                        </div>
+                    @endif
+                    <div class="col">
+                        <input class="form-control form-control-sm" name="image_selfie" type="file" >
+                    </div>   
                 </div>
 
                 <div class="mb-3">
                     <label for="formFile" class="form-label">{{trans('user.CMND')}}</label>
-                    <input class="form-control" name="image_cmnd" type="file" id="formFile">
+                    @if($user_veri->image_cmnd != null)
+                        <img src="{{asset('upload/users/'.$user_veri->image_cmnd)}}" alt="{{$user_veri->name_user}}" class="img-thumbnail">
+                        <div class="col">
+                            {{trans('user.update-picture')}}
+                        </div>
+                    @endif
+                    <div class="col">
+                        <input class="form-control form-control-sm" name="image_cmnd" type="file" id="formFile" >
+                    </div>
                 </div>
                 </br>
                 <div class="mt-3" >
-                    <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit">{{trans('user.verification')}}</button>
+                    <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" name="submit">
+                        {{trans('user.save')}}
+                    </button>
                 </div>
             </form>
 
@@ -75,8 +82,9 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    
                     <h4 class="modal-title">{{trans('user.information')}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <form class="form" action="/user-verification/info" method="POST" id="formModal">
                     @csrf
@@ -112,22 +120,22 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">{{trans('user.change-password')}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <form class="form" action="/reset-password" method="POST" id="formModal">
                     @csrf
                         <div class="modal-body">
                             <div class="form-group">
-                                <label >Mật khẩu cũ</label>
+                                <label >{{trans('user.old-password')}}</label>
                                 <input type="password"  name="password_old" class="form-control input-sm" >
                             </div>
                             <div class="form-group">
-                                <label >Mật khẩu mới</label>
+                                <label >{{trans('user.new-password')}}</label>
                                 <input type="password" name="password" class="form-control input-sm">
                             </div>
                             <div class="form-group">
-                                <label >Nhập lại mật khẩu mới</label>
+                                <label >{{trans('user.confirm-new-password')}}</label>
                                 <input type="password" name="c_password" class="form-control input-sm">
                             </div>
 

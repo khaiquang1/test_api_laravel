@@ -7,8 +7,13 @@
     <title>Register</title>
 
     <!-- Bootstrap CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    
     <style>
         body {
             padding-top: 40px;
@@ -16,13 +21,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <h2 style ="text-align:center; color:blue;">Đăng ký</h2>
-            </div>
-        </div>
-    </div>
+    
+    <h2 style ="text-align:center; color:blue;">Đăng ký</h2>
     <div class="account-pages my-5 pt-5">
             <div class="container">
                 <div class="row justify-content-center">
@@ -35,7 +35,8 @@
                                     <form method="POST" class="form-horizontal mt-4" action="">
                                         @csrf
                                         <div class="form-group">
-                                            <label >Email <i>(Bắt buộc)</i></label>
+                                    
+                                            <label >Email <i class="obligatory" data-toggle="popover" title="Lưu ý" data-content="Bắt buộc nhập">(*)</i></label>
                                             <input type="email" class="form-control  is-invalid" value="" id="useremail" name="email" required placeholder="Enter email">
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
@@ -50,8 +51,8 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="username">Username <i>(Bắt buộc)</i></label>
-                                            <input type="text" class="form-control @error('name') is-invalid @enderror" value="" required name="name" id="username" placeholder="Enter username">
+                                            <label for="username">Username <i data-toggle="popover" title="Lưu ý" data-content="Bắt buộc nhập">(*)</i></label>
+                                            <input type="text" class="form-control is-invalid" required name="name" id="username" placeholder="Enter username">
                                             @error('name')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -65,8 +66,8 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="userpassword">Password <i>(Bắt buộc)</i></label>
-                                            <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required id="userpassword" placeholder="Enter password">
+                                            <label for="userpassword">Password <i data-toggle="popover" title="Lưu ý" data-content="Bắt buộc nhập">(*)</i></label>
+                                            <input type="password" class="form-control is-invalid " name="password" required id="userpassword" placeholder="Enter password">
                                             @error('password')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
                                                     <strong>{{ $message }}</strong>
@@ -75,8 +76,8 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label >Password Confirm <i>(Bắt buộc)</i></label>
-                                            <input id="password-confirm" type="password" name="c_password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Enter password">
+                                            <label >Password Confirm <i data-toggle="popover" title="Lưu ý" data-content="Bắt buộc nhập">(*)</i></label>
+                                            <input id="password-confirm" type="password" name="c_password" class="form-control is-invalid " name="password" required placeholder="Enter password">
                                         </div>
                                             @error('c_password')
                                                 <span class="invalid-feedback" role="alert" style="color:red;">
@@ -86,7 +87,7 @@
 
                                         <div class="form-group">
                                             <label >Mã giới thiệu</label>
-                                            <input  type="text" name="parent" class="form-control is-invalid " placeholder="Enter code">
+                                            <input  type="text" name="parent" class="form-control " placeholder="Enter code">
                                         </div>
                                         @if (session('error_parent'))
                                             <span class="invalid-feedback" role="alert" style="color:red;">
@@ -96,17 +97,17 @@
                                         <h4>Thông tin tài khoản</h4>
                                         <div class="form-group">
                                             <label >Họ và tên </label>
-                                            <input  type="text" name="name_user" class="form-control is-invalid " placeholder="Enter name">
+                                            <input  type="text" name="name_user" class="form-control" placeholder="Enter name">
                                         </div>
 
                                         <div class="form-group">
-                                            <label >Số điện thoại <i>(Bắt buộc)</i></label>
+                                            <label >Số điện thoại <i class="obligatory" data-toggle="popover" title="Lưu ý" data-content="Bắt buộc nhập">(*)</i></label>
                                             <input  type="phone" name="phone" class="form-control is-invalid " placeholder="Enter phone number" required>
                                         </div>
 
                                         <div class="form-group">
                                             <label >Địa chỉ </label>
-                                            <input  type="text" name="address" class="form-control is-invalid " placeholder="Enter address" >
+                                            <input  type="text" name="address" class="form-control " placeholder="Enter address" >
                                         </div>
                                         
                                         <div class="mt-4">
@@ -136,7 +137,14 @@
             </div>
         </div>
 
-               
+        <script>
+            $(document).ready(function() {
+                $('[data-toggle="popover"]').popover({
+                    placement: 'top',
+                    trigger: 'hover',
+                });
+            });
+        </script>     
 </body>
 </html>
 
