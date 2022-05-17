@@ -18,20 +18,6 @@ class MoneyController extends Controller
 {
     public function walletUser(){
         $user = Auth::user();
-        $check_wallet = Wallet::where('id_user',$user->id)->first();
-        if(empty($check_wallet)){
-            Wallet::create([
-                'id_user' => $user->id,
-                'wallet_address' => HandleClasses::randomString(16),
-                'type_money' => "VND",
-            ]);
-
-            Wallet::create([
-                'id_user' => $user->id,
-                'wallet_address' => HandleClasses::randomString(16),
-                'type_money' => "USD",
-            ]);
-        }
         $user = Auth::user();
         $banks = Bank::all();
         $currency = Currency::all();

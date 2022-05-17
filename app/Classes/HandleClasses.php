@@ -3,11 +3,9 @@
 namespace App\Classes;
 
 class HandleClasses {
-    public function handleImage($file){
+    public function handleImage($file,$uploadPath){
         $fileExtension = $file->getClientOriginalExtension();
         $fileName = time()."_".md5(rand(0,999)).".".$fileExtension;
-        $uploadPath= public_path('/upload/users');
-
         $file->move($uploadPath, $fileName);
         return $fileName;
     }

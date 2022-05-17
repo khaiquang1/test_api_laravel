@@ -17,5 +17,9 @@ return [
     'verification' => 'Xác minh',
     'CMND' => 'CCCD/CMND',
     'your-selfie' => 'Ảnh tự sướng',
-    
+    'old-password' => 'Mật khẩu cũ',
+    'new-password' => 'Mật khẩu mới',
+    'confirm-new-password' => 'Nhập lại mật khẩu mới',
+    'update-picture'=> 'Cập nhật ảnh',
+
 ];
